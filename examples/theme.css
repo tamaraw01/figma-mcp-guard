@@ -1,0 +1,7 @@
+@theme {
+  --color-base-ink: #0f172a;
+  --color-base-paper: #f8fafc;
+  --color-base-blue: #1d4ed8;
+  --color-brand-primary: var(--color-base-blue);
+  --radius-md: 8px;
+}
