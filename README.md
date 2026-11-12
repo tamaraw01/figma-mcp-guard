@@ -52,6 +52,31 @@ python3 -m pip install . --no-build-isolation
 | `FMG011` | warning | Hardcoded hex color in code matches an existing token |
 | `FMG012` | warning | Hardcoded `px` value in code matches an existing token |
 
+## How tokens map to CSS variables
+
+Each segment of the token path is lowercased, camelCase is split with a hyphen, and the segments are joined with `-` under a `--` prefix. `--prefix` adds one more leading segment.
+
+| Token path | `--prefix` | CSS variable |
+|---|---|---|
+| `color.brand.primary` | none | `--color-brand-primary` |
+| `color.brand.primary` | `ds` | `--ds-color-brand-primary` |
+| `fontSize.bodyLg` | none | `--font-size-body-lg` |
+
+Only declarations inside `:root`, `html`, or `@theme` count as base values. `FMG003` looks at base variables whose name starts with the group of an existing token (for example `--color-`), so unrelated variables are left alone.
+
+When a directory is passed, `--css` reads only `.css` files, and `--scan` / `scan --files` read only `.css`, `.scss`, `.ts`, `.tsx`, `.js`, `.jsx`, `.vue`, `.svelte`, and `.html` files.
+
+## Exit codes
+
+- `0`: no errors, and no warnings when `--strict` is set
+- `1`: at least one error, or at least one warning under `--strict`. A missing token or CSS file is reported as `FMG000` and also exits `1`.
+- `2`: invalid arguments (reported by `argparse`)
+
+## Current limits
+
+- Mode and component overrides such as `.dark { ... }` or `[data-theme] { ... }` are parsed but not compared with tokens.
+- An alias is resolved only when it is the whole value (`"{color.base.blue}"`). Aliases inside longer strings, such as `"{size.border} solid"`, stay unresolved.
+
 ## Tests
 
 ```bash
